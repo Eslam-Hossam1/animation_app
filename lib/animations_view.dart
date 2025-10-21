@@ -11,8 +11,7 @@ class AnimationsView extends StatefulWidget {
 
 class _AnimationsViewState extends State<AnimationsView> {
   bool isValuesChanged = false;
-  double left = 50;
-  double top = 25;
+  double left = 20;
   @override
   Widget build(BuildContext context) {
     /// Animated Widget
@@ -30,40 +29,31 @@ class _AnimationsViewState extends State<AnimationsView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 300,
-              height: 300,
-              color: Colors.blue,
-              child: Stack(
-                children: [
-                  AnimatedPositioned(
-                    top: top,
-                    left: left,
-                    onEnd: () {
-                      log('animation end');
-                    },
-                    duration: Duration(
-                      seconds: 1,
-                    ),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
+            //لو ناوي تحط container فوقيها يبقى لا استعمل animated container والعب ف الpadding بتاعه احسن
+            AnimatedPadding(
+              padding: EdgeInsets.only(left: left),
+              onEnd: () {
+                log('animation end');
+              },
+              duration: Duration(
+                seconds: 1,
+              ),
+              child: Container(
+                width: 100,
+                height: 100,
+                color: Colors.red,
               ),
             ),
             ElevatedButton(
               onPressed: () {
                 if (isValuesChanged) {
+                  //initial values
                   isValuesChanged = false;
-                  top = 25;
-                  left = 50;
+                  left = 20;
                 } else {
+                  //new values
                   isValuesChanged = true;
-                  top = 125;
-                  left = 100;
+                  left = 80;
                 }
                 setState(() {});
               },
