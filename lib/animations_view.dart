@@ -11,7 +11,7 @@ class AnimationsView extends StatefulWidget {
 
 class _AnimationsViewState extends State<AnimationsView> {
   bool isValuesChanged = false;
-  double left = 20;
+  double scale = .5;
   @override
   Widget build(BuildContext context) {
     /// Animated Widget
@@ -29,9 +29,13 @@ class _AnimationsViewState extends State<AnimationsView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //لو ناوي تحط container فوقيها يبقى لا استعمل animated container والعب ف الpadding بتاعه احسن
-            AnimatedPadding(
-              padding: EdgeInsets.only(left: left),
+            ///بيتجاهل ال boundries بتاعت ابنه خلي بالك
+            ///اكنه بيتعامل زي ال stack كده
+            ///ده غير ال behavior بتاع ال container خلي بالك ف استعمل كل واحد ف المكان الي يناسبه
+            ///filterQuality لو عاوز تعمل blur او حاجة زي كده اثناء ال scalling
+            AnimatedScale(
+              // filterQuality: FilterQuality.low,
+              scale: scale,
               onEnd: () {
                 log('animation end');
               },
@@ -49,11 +53,11 @@ class _AnimationsViewState extends State<AnimationsView> {
                 if (isValuesChanged) {
                   //initial values
                   isValuesChanged = false;
-                  left = 20;
+                  scale = .5;
                 } else {
                   //new values
                   isValuesChanged = true;
-                  left = 80;
+                  scale = 2;
                 }
                 setState(() {});
               },
