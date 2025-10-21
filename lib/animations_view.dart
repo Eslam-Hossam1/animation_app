@@ -11,11 +11,11 @@ class AnimationsView extends StatefulWidget {
 
 class _AnimationsViewState extends State<AnimationsView> {
   bool isValuesChanged = false;
-  double opacity = .5;
+  AlignmentGeometry alignment = Alignment.center;
   @override
   Widget build(BuildContext context) {
-    /// Animated Opacity
-    /// is a widget where you can animate the Opacity based on changable opacity variable during time
+    /// Animated Align
+    /// is a widget where you can animate the alignment based on changable alignment variable during time
     /// onEnd is a method which invoked after animation ends
     /// you can change the default Curve.linear to any curve, to help choose see the docs at https://api.flutter.dev/flutter/animation/Curves-class.html
     /// الفكر ة من الاخر عشان تعمل animation هي انك تغير القيم الي بتديها لل Animated Widget وتعمل setState عشان تحدث الui  و تعمل build
@@ -29,28 +29,33 @@ class _AnimationsViewState extends State<AnimationsView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedOpacity(
-              opacity: opacity,
-              onEnd: () {
-                log('animation end');
-              },
-              duration: Duration(
-                seconds: 1,
-              ),
-              child: Container(
-                width: 100,
-                height: 100,
-                color: Colors.red,
+            Container(
+              color: Colors.blue,
+              height: 300,
+              width: 300,
+              child: AnimatedAlign(
+                alignment: alignment,
+                onEnd: () {
+                  log('animation end');
+                },
+                duration: Duration(
+                  seconds: 1,
+                ),
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.red,
+                ),
               ),
             ),
             ElevatedButton(
               onPressed: () {
                 if (isValuesChanged) {
                   isValuesChanged = false;
-                  opacity = .5;
+                  alignment = Alignment.topRight;
                 } else {
                   isValuesChanged = true;
-                  opacity = 1;
+                  alignment = Alignment.center;
                 }
                 setState(() {});
               },
