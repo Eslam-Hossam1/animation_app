@@ -11,11 +11,12 @@ class AnimationsView extends StatefulWidget {
 
 class _AnimationsViewState extends State<AnimationsView> {
   bool isValuesChanged = false;
-  AlignmentGeometry alignment = Alignment.center;
+  double left = 50;
+  double top = 25;
   @override
   Widget build(BuildContext context) {
-    /// Animated Align
-    /// is a widget where you can animate the alignment based on changable alignment variable during time
+    /// Animated Widget
+    /// is a widget where you can animate the the Widget based on changable property variable during time
     /// onEnd is a method which invoked after animation ends
     /// you can change the default Curve.linear to any curve, to help choose see the docs at https://api.flutter.dev/flutter/animation/Curves-class.html
     /// الفكر ة من الاخر عشان تعمل animation هي انك تغير القيم الي بتديها لل Animated Widget وتعمل setState عشان تحدث الui  و تعمل build
@@ -30,32 +31,39 @@ class _AnimationsViewState extends State<AnimationsView> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              color: Colors.blue,
-              height: 300,
               width: 300,
-              child: AnimatedAlign(
-                alignment: alignment,
-                onEnd: () {
-                  log('animation end');
-                },
-                duration: Duration(
-                  seconds: 1,
-                ),
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  color: Colors.red,
-                ),
+              height: 300,
+              color: Colors.blue,
+              child: Stack(
+                children: [
+                  AnimatedPositioned(
+                    top: top,
+                    left: left,
+                    onEnd: () {
+                      log('animation end');
+                    },
+                    duration: Duration(
+                      seconds: 1,
+                    ),
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
               ),
             ),
             ElevatedButton(
               onPressed: () {
                 if (isValuesChanged) {
                   isValuesChanged = false;
-                  alignment = Alignment.topRight;
+                  top = 25;
+                  left = 50;
                 } else {
                   isValuesChanged = true;
-                  alignment = Alignment.center;
+                  top = 125;
+                  left = 100;
                 }
                 setState(() {});
               },
