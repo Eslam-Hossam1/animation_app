@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 class AnimationsView extends StatefulWidget {
@@ -18,7 +16,7 @@ class _AnimationsViewState extends State<AnimationsView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomAnimatedLoadingButton(),
+            CustomAnimatedSearchBar(),
           ],
         ),
       ),
@@ -26,42 +24,41 @@ class _AnimationsViewState extends State<AnimationsView> {
   }
 }
 
-class CustomAnimatedLoadingButton extends StatefulWidget {
-  const CustomAnimatedLoadingButton({
+class CustomAnimatedSearchBar extends StatefulWidget {
+  const CustomAnimatedSearchBar({
     super.key,
   });
 
   @override
-  State<CustomAnimatedLoadingButton> createState() =>
-      _CustomAnimatedLoadingButtonState();
+  State<CustomAnimatedSearchBar> createState() =>
+      _CustomAnimatedSearchBarState();
 }
 
-class _CustomAnimatedLoadingButtonState
-    extends State<CustomAnimatedLoadingButton> {
-  bool isLoading = false;
-  double width = 300;
+class _CustomAnimatedSearchBarState
+    extends State<CustomAnimatedSearchBar> {
+  bool isClicked = false;
+  double width = 50;
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
+      color: Colors.cyan.withAlpha(30),
       width: width,
       duration: Duration(milliseconds: 500),
-      child: ElevatedButton(
-        onPressed: () {
-          if (isLoading) {
-            width = 300;
+      child: TextField(
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.search,
+          ),
+        ),
+        onTap: () {
+          if (isClicked) {
+            width = 50;
           } else {
-            width = 100;
+            width = 300;
           }
-          isLoading = !isLoading;
+          isClicked = !isClicked;
           setState(() {});
         },
-        child: AnimatedSwitcher(
-          duration: Duration(seconds: 1),
-          child: isLoading
-              ? SizedBox.square(
-                  dimension: 25, child: CircularProgressIndicator())
-              : Text('Loading Button'),
-        ),
       ),
     );
   }
