@@ -15,9 +15,9 @@ class _AnimationsViewState extends State<AnimationsView> {
       body: SafeArea(
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ExpandableUserProfile(),
+              ButtonPressEffect(),
             ],
           ),
         ),
@@ -26,56 +26,52 @@ class _AnimationsViewState extends State<AnimationsView> {
   }
 }
 
-class ExpandableUserProfile extends StatefulWidget {
-  const ExpandableUserProfile({
+class ButtonPressEffect extends StatefulWidget {
+  const ButtonPressEffect({
     super.key,
   });
 
   @override
-  State<ExpandableUserProfile> createState() =>
-      _ExpandableUserProfileState();
+  State<ButtonPressEffect> createState() => _ButtonPressEffectState();
 }
 
-class _ExpandableUserProfileState extends State<ExpandableUserProfile> {
+class _ButtonPressEffectState extends State<ButtonPressEffect> {
   bool isClicked = false;
-  double width = 150;
-  double opacity = 0.0;
+  double scale = 1.0;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        if (isClicked) {
-          opacity = 0.0;
-          width = 150;
-        } else {
-          opacity = 1.0;
-          width = 350;
-        }
-        isClicked = !isClicked;
+      // onTapUp: (_) {
+      //   scale = 1;
+      //   setState(() {});
+      // },
+      // onTapDown: (_) {
+      //   scale = .8;
+      //   setState(() {});
+      // },
+      onPanStart: (_) {
+        scale = .8;
         setState(() {});
       },
-      child: AnimatedContainer(
-        width: width,
-        duration: Duration(milliseconds: 500),
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                'assets/gumball-and-darwin-vuxp4qvtbz62xoxn.jpg',
-              ),
+      onPanEnd: (_) {
+        scale = 1;
+        setState(() {});
+      },
+      child: AnimatedScale(
+        scale: scale,
+        duration: Duration(milliseconds: 300),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              "Press Me",
+              style: TextStyle(color: Colors.white, fontSize: 24),
             ),
-            AnimatedOpacity(
-              opacity: opacity,
-              duration: Duration(milliseconds: 500),
-              child: Column(
-                children: [
-                  Text('Gumball and Darwin'),
-                  Text('The Amazing World of Gumball'),
-                ],
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );
