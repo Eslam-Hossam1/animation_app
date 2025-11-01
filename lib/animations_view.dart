@@ -12,53 +12,71 @@ class _AnimationsViewState extends State<AnimationsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomAnimatedSearchBar(),
-          ],
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ExpandableUserProfile(),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class CustomAnimatedSearchBar extends StatefulWidget {
-  const CustomAnimatedSearchBar({
+class ExpandableUserProfile extends StatefulWidget {
+  const ExpandableUserProfile({
     super.key,
   });
 
   @override
-  State<CustomAnimatedSearchBar> createState() =>
-      _CustomAnimatedSearchBarState();
+  State<ExpandableUserProfile> createState() =>
+      _ExpandableUserProfileState();
 }
 
-class _CustomAnimatedSearchBarState
-    extends State<CustomAnimatedSearchBar> {
+class _ExpandableUserProfileState extends State<ExpandableUserProfile> {
   bool isClicked = false;
-  double width = 50;
+  double width = 150;
+  double opacity = 0.0;
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      color: Colors.cyan.withAlpha(30),
-      width: width,
-      duration: Duration(milliseconds: 500),
-      child: TextField(
-        decoration: InputDecoration(
-          prefixIcon: Icon(
-            Icons.search,
-          ),
+    return GestureDetector(
+      onTap: () {
+        if (isClicked) {
+          opacity = 0.0;
+          width = 150;
+        } else {
+          opacity = 1.0;
+          width = 350;
+        }
+        isClicked = !isClicked;
+        setState(() {});
+      },
+      child: AnimatedContainer(
+        width: width,
+        duration: Duration(milliseconds: 500),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                'assets/gumball-and-darwin-vuxp4qvtbz62xoxn.jpg',
+              ),
+            ),
+            AnimatedOpacity(
+              opacity: opacity,
+              duration: Duration(milliseconds: 500),
+              child: Column(
+                children: [
+                  Text('Gumball and Darwin'),
+                  Text('The Amazing World of Gumball'),
+                ],
+              ),
+            )
+          ],
         ),
-        onTap: () {
-          if (isClicked) {
-            width = 50;
-          } else {
-            width = 300;
-          }
-          isClicked = !isClicked;
-          setState(() {});
-        },
       ),
     );
   }
