@@ -17,7 +17,7 @@ class _AnimationsViewState extends State<AnimationsView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              DynamicPopups(),
+              CollapsibleFaqSection(),
             ],
           ),
         ),
@@ -26,42 +26,32 @@ class _AnimationsViewState extends State<AnimationsView> {
   }
 }
 
-class DynamicPopups extends StatefulWidget {
-  const DynamicPopups({
+class CollapsibleFaqSection extends StatefulWidget {
+  const CollapsibleFaqSection({
     super.key,
   });
 
   @override
-  State<DynamicPopups> createState() => _DynamicPopupsState();
+  State<CollapsibleFaqSection> createState() => _CollapsibleFaqSectionState();
 }
 
-class _DynamicPopupsState extends State<DynamicPopups> {
+class _CollapsibleFaqSectionState extends State<CollapsibleFaqSection> {
   bool isClicked = false;
   double scale = 1.0;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Stack(
-          children: [
-            Image.asset(
-              fit: BoxFit.cover,
-              'assets/gumball-and-darwin-vuxp4qvtbz62xoxn.jpg',
-              height: 200,
-              width: 100,
-            ),
-            AnimatedPositioned(
-              top: isClicked ? 200 : 0,
-              duration: Duration(
-                milliseconds: 800,
-              ),
-              child: Container(
-                height: 200,
-                width: 100,
-                color: Colors.deepPurple,
-              ),
-            ),
-          ],
+        Text('info'),
+        AnimatedContainer(
+          duration: Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+          height: isClicked ? 200 : 60,
+          color: isClicked ? Colors.blue : Colors.red,
+          child: Center(
+            child: Text(
+                'lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit '),
+          ),
         ),
         SizedBox(
           height: 20,
