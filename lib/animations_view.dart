@@ -17,7 +17,7 @@ class _AnimationsViewState extends State<AnimationsView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CollapsibleFaqSection(),
+              AnimatedCategories(),
             ],
           ),
         ),
@@ -26,50 +26,76 @@ class _AnimationsViewState extends State<AnimationsView> {
   }
 }
 
-class CollapsibleFaqSection extends StatefulWidget {
-  const CollapsibleFaqSection({
+class AnimatedCategories extends StatefulWidget {
+  const AnimatedCategories({
     super.key,
   });
 
   @override
-  State<CollapsibleFaqSection> createState() => _CollapsibleFaqSectionState();
+  State<AnimatedCategories> createState() => _AnimatedCategoriesState();
 }
 
-class _CollapsibleFaqSectionState extends State<CollapsibleFaqSection> {
+class _AnimatedCategoriesState extends State<AnimatedCategories> {
   bool isClicked = false;
+  int currentIndex = 0;
   double scale = 1.0;
+  static List<String> categories = [
+    "Category 1",
+    "Category 2",
+    "Category 3",
+    "Category 4",
+    "Category 5",
+    "Category 6",
+    "Category 7",
+    "Category 8",
+    "Category 9",
+    "Category 10",
+  ];
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('info'),
-        AnimatedContainer(
-          duration: Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-          height: isClicked ? 200 : 60,
-          color: isClicked ? Colors.blue : Colors.red,
-          child: Center(
-            child: Text(
-                'lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit lorem ipsum dolor sit amet consectetur adipiscing elit '),
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        ElevatedButton(
-            onPressed: () {
-              if (isClicked) {
-                setState(() {
-                  isClicked = false;
-                });
-              } else {
-                setState(() {
-                  isClicked = true;
-                });
-              }
+    return SizedBox(
+      height: 50,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          isClicked = currentIndex == index;
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                currentIndex = index;
+              });
             },
-            child: Text('Click Me')),
-      ],
+            child: AnimatedContainer(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: isClicked ? Colors.orange : Colors.grey,
+                ),
+                color: isClicked ? Colors.orange : Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              duration: Duration(
+                milliseconds: 300,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  '${categories[index]}',
+                  style: TextStyle(
+                    color: isClicked ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        separatorBuilder: (context, index) {
+          return SizedBox(
+            width: 10,
+          );
+        },
+        itemCount: 20,
+      ),
     );
   }
 }
