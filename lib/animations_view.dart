@@ -36,65 +36,81 @@ class AnimatedCategories extends StatefulWidget {
 }
 
 class _AnimatedCategoriesState extends State<AnimatedCategories> {
-  bool isClicked = false;
-  int currentIndex = 0;
-  double scale = 1.0;
-  static List<String> categories = [
-    "Category 1",
-    "Category 2",
-    "Category 3",
-    "Category 4",
-    "Category 5",
-    "Category 6",
-    "Category 7",
-    "Category 8",
-    "Category 9",
-    "Category 10",
-  ];
+  bool isLeft = true;
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          isClicked = currentIndex == index;
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                currentIndex = index;
-              });
-            },
-            child: AnimatedContainer(
-              alignment: Alignment.center,
+    return Container(
+      height: 60,
+      width: 200,
+      decoration: BoxDecoration(
+        color: Color(0xff29282D),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Stack(
+        children: [
+          AnimatedPositioned(
+            top: 5,
+            left: isLeft ? 5 : 95,
+            right: isLeft ? 95 : 5,
+            duration: Duration(milliseconds: 250),
+            child: Container(
+              height: 50,
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: isClicked ? Colors.orange : Colors.grey,
-                ),
-                color: isClicked ? Colors.orange : Colors.white,
-                borderRadius: BorderRadius.circular(10),
+                color: Color(0xff5D5D63),
+                borderRadius: BorderRadius.circular(8),
               ),
-              duration: Duration(
-                milliseconds: 300,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  '${categories[index]}',
-                  style: TextStyle(
-                    color: isClicked ? Colors.white : Colors.black,
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior
+                      .opaque, // 👈 makes the whole area tappable
+
+                  onTap: () {
+                    setState(() {
+                      isLeft = true;
+                    });
+                  },
+                  child: Center(
+                    child: Text(
+                      'All',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return SizedBox(
-            width: 10,
-          );
-        },
-        itemCount: 20,
+              Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior
+                      .opaque, // 👈 makes the whole area tappable
+
+                  onTap: () {
+                    setState(() {
+                      isLeft = false;
+                    });
+                  },
+                  child: Center(
+                    child: Text(
+                      'Contacts',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
