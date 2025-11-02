@@ -40,29 +40,44 @@ class _AnimatedCategoriesState extends State<AnimatedCategories> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        AnimatedPhysicalModel(
-            shape: BoxShape.circle,
-            color: showFirst ? Colors.blue : Colors.red,
-            shadowColor: showFirst ? Colors.blue : Colors.red,
-            elevation: showFirst ? 20 : 30,
-            duration: Duration(
-              milliseconds: 300,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Column(
+        children: [
+          Container(
+            color: const Color.fromRGBO(33, 150, 243, 1),
+            width: 350,
+            height: 200,
+            child: Stack(
+              children: [
+                AnimatedPositioned(
+                  top: 20,
+                  left: showFirst ? 20 : 80,
+                  duration: Duration(milliseconds: 300),
+                  child: Text('Animated Positioned'),
+                ),
+                AnimatedPositionedDirectional(
+                  top: 60,
+                  start: showFirst ? 20 : 80,
+                  duration: Duration(milliseconds: 300),
+                  child: Text('Animated Positioned Directional'),
+                ),
+              ],
             ),
-            child: Text('data')),
-        SizedBox(
-          height: 100,
-        ),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              showFirst = !showFirst;
-            });
-          },
-          child: Text("Animate"),
-        ),
-      ],
+          ),
+          SizedBox(
+            height: 100,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                showFirst = !showFirst;
+              });
+            },
+            child: Text("Animate"),
+          ),
+        ],
+      ),
     );
   }
 }
