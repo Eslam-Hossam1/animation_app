@@ -42,26 +42,12 @@ class _AnimatedCategoriesState extends State<AnimatedCategories> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          color: Colors.red,
-          height: 100,
-          width: 100,
-          child: AnimatedCrossFade(
-            firstChild: Icon(
-              Icons.favorite,
-              color: Colors.white,
-              size: 50,
-            ),
-            secondChild: FlutterLogo(
-              size: 50,
-            ),
-            crossFadeState: showFirst
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            duration: Duration(
-              milliseconds: 500,
-            ),
-          ),
+        AnimatedDefaultTextStyle(
+          style: showFirst
+              ? TextStyle(fontSize: 40, color: Colors.red)
+              : TextStyle(fontSize: 20, color: Colors.blue),
+          duration: Duration(milliseconds: 300),
+          child: showFirst ? Text('Software Engineer') : Text('Eslam Hossam'),
         ),
         SizedBox(
           height: 20,
