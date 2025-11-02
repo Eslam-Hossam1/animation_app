@@ -44,26 +44,10 @@ class _AnimatedCategoriesState extends State<AnimatedCategories> {
       textDirection: TextDirection.rtl,
       child: Column(
         children: [
-          Container(
-            color: const Color.fromRGBO(33, 150, 243, 1),
-            width: 350,
-            height: 200,
-            child: Stack(
-              children: [
-                AnimatedPositioned(
-                  top: 20,
-                  left: showFirst ? 20 : 80,
-                  duration: Duration(milliseconds: 300),
-                  child: Text('Animated Positioned'),
-                ),
-                AnimatedPositionedDirectional(
-                  top: 60,
-                  start: showFirst ? 20 : 80,
-                  duration: Duration(milliseconds: 300),
-                  child: Text('Animated Positioned Directional'),
-                ),
-              ],
-            ),
+          AnimatedRotation(
+            turns: showFirst ? 1 : 5,
+            duration: Duration(milliseconds: 1000),
+            child: Text('Eslam Hossam'),
           ),
           SizedBox(
             height: 100,
