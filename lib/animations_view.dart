@@ -36,82 +36,45 @@ class AnimatedCategories extends StatefulWidget {
 }
 
 class _AnimatedCategoriesState extends State<AnimatedCategories> {
-  bool isLeft = true;
+  bool showFirst = true;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 60,
-      width: 200,
-      decoration: BoxDecoration(
-        color: Color(0xff29282D),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Stack(
-        children: [
-          AnimatedPositioned(
-            top: 5,
-            left: isLeft ? 5 : 95,
-            right: isLeft ? 95 : 5,
-            duration: Duration(milliseconds: 250),
-            child: Container(
-              height: 50,
-              decoration: BoxDecoration(
-                color: Color(0xff5D5D63),
-                borderRadius: BorderRadius.circular(8),
-              ),
+    return Column(
+      children: [
+        Container(
+          color: Colors.red,
+          height: 100,
+          width: 100,
+          child: AnimatedCrossFade(
+            firstChild: Icon(
+              Icons.favorite,
+              color: Colors.white,
+              size: 50,
+            ),
+            secondChild: FlutterLogo(
+              size: 50,
+            ),
+            crossFadeState: showFirst
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: Duration(
+              milliseconds: 500,
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior
-                      .opaque, // 👈 makes the whole area tappable
-
-                  onTap: () {
-                    setState(() {
-                      isLeft = true;
-                    });
-                  },
-                  child: Center(
-                    child: Text(
-                      'All',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior
-                      .opaque, // 👈 makes the whole area tappable
-
-                  onTap: () {
-                    setState(() {
-                      isLeft = false;
-                    });
-                  },
-                  child: Center(
-                    child: Text(
-                      'Contacts',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              showFirst = !showFirst;
+            });
+          },
+          child: Text("Animate"),
+        ),
+      ],
     );
   }
 }
