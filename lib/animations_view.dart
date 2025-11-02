@@ -35,33 +35,41 @@ class AnimatedCategories extends StatefulWidget {
   State<AnimatedCategories> createState() => _AnimatedCategoriesState();
 }
 
+enum SelectedWidget { first, second, third }
+
 class _AnimatedCategoriesState extends State<AnimatedCategories> {
-  bool showFirst = true;
+  SelectedWidget selectedWidget = SelectedWidget.first;
+                int counter = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Column(
-        children: [
-          AnimatedRotation(
-            turns: showFirst ? 1 : 5,
-            duration: Duration(milliseconds: 1000),
-            child: Text('Eslam Hossam'),
-          ),
-          SizedBox(
-            height: 100,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                showFirst = !showFirst;
-              });
-            },
-            child: Text("Animate"),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 300),
+          child: switch (selectedWidget) {
+            SelectedWidget.first => FlutterLogo(size: 50),
+            SelectedWidget.second => Text('Second'),
+            SelectedWidget.third => Container(
+                width: 50,
+                height: 50,
+                color: Colors.red,
+              ),
+          },
+        ),
+        SizedBox(
+          height: 100,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              selectedWidget = SelectedWidget
+                  .values[counter++ % SelectedWidget.values.length];
+            });
+          },
+          child: Text("Animate"),
+        ),
+      ],
     );
   }
 }
