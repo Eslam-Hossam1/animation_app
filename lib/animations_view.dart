@@ -39,13 +39,19 @@ enum SelectedWidget { first, second, third }
 
 class _AnimatedCategoriesState extends State<AnimatedCategories> {
   SelectedWidget selectedWidget = SelectedWidget.first;
-                int counter = 0;
+  int counter = 0;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         AnimatedSwitcher(
+          transitionBuilder: (child, animation) {
+            return ScaleTransition(
+              scale: animation,
+              child: child,
+            );
+          },
           duration: Duration(milliseconds: 300),
           child: switch (selectedWidget) {
             SelectedWidget.first => FlutterLogo(size: 50),
