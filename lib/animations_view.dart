@@ -42,15 +42,17 @@ class _AnimatedCategoriesState extends State<AnimatedCategories> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AnimatedDefaultTextStyle(
-          style: showFirst
-              ? TextStyle(fontSize: 40, color: Colors.red)
-              : TextStyle(fontSize: 20, color: Colors.blue),
-          duration: Duration(milliseconds: 300),
-          child: showFirst ? Text('Software Engineer') : Text('Eslam Hossam'),
-        ),
+        AnimatedPhysicalModel(
+            shape: BoxShape.circle,
+            color: showFirst ? Colors.blue : Colors.red,
+            shadowColor: showFirst ? Colors.blue : Colors.red,
+            elevation: showFirst ? 20 : 30,
+            duration: Duration(
+              milliseconds: 300,
+            ),
+            child: Text('data')),
         SizedBox(
-          height: 20,
+          height: 100,
         ),
         ElevatedButton(
           onPressed: () {
