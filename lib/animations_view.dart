@@ -26,28 +26,58 @@ class _AnimationsViewState extends State<AnimationsView> {
   }
 }
 
-class CustomTweenAnimationBuilder extends StatelessWidget {
+class CustomTweenAnimationBuilder extends StatefulWidget {
   const CustomTweenAnimationBuilder({
     super.key,
   });
 
   @override
+  State<CustomTweenAnimationBuilder> createState() =>
+      _CustomTweenAnimationBuilderState();
+}
+
+class _CustomTweenAnimationBuilderState
+    extends State<CustomTweenAnimationBuilder> {
+  int begin = 0;
+  int end = 0;
+  @override
   Widget build(BuildContext context) {
-    return TweenAnimationBuilder<int>(
-      tween: IntTween(
-        begin: 0,
-        end: 100,
-      ),
-      duration: Duration(seconds: 2),
-      builder: (context, value, child) {
-        return Text(
-          '$value',
-          style: TextStyle(
-            fontSize: 100,
-            fontWeight: FontWeight.bold,
+    return Column(
+      children: [
+        TweenAnimationBuilder<int>(
+          tween: IntTween(
+            begin: begin,
+            end: end,
           ),
-        );
-      },
+          duration: Duration(seconds: 2),
+          builder: (context, value, child) {
+            return Text(
+              '$value',
+              style: const TextStyle(
+                fontSize: 100,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          },
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              if (begin == 0 && end == 100) {
+                begin = 100;
+                end = 0;
+              } else {
+                begin = 0;
+                end = 100;
+              }
+            });
+          },
+          child: Text('Animate to ${100}'),
+        ),
+      ],
     );
   }
 }
