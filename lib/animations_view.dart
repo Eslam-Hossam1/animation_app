@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class AnimationsView extends StatefulWidget {
@@ -17,7 +19,7 @@ class _AnimationsViewState extends State<AnimationsView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomAnimatedList(),
+              CustomTweenAnimationBuilder(),
             ],
           ),
         ),
@@ -26,88 +28,126 @@ class _AnimationsViewState extends State<AnimationsView> {
   }
 }
 
-class CustomAnimatedList extends StatefulWidget {
-  const CustomAnimatedList({
+class CustomTweenAnimationBuilder extends StatefulWidget {
+  const CustomTweenAnimationBuilder({
     super.key,
   });
 
   @override
-  State<CustomAnimatedList> createState() => _CustomAnimatedListState();
+  State<CustomTweenAnimationBuilder> createState() =>
+      _CustomTweenAnimationBuilderState();
 }
 
-class _CustomAnimatedListState extends State<CustomAnimatedList> {
-  List<String> items = [
-    'Eslam',
-    'Ahmed',
-    'Marwan',
-    'Abass',
-    'Salman',
-  ];
-
-  GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
+class _CustomTweenAnimationBuilderState
+    extends State<CustomTweenAnimationBuilder> {
+  Color animatedContainerColor = Colors.blue;
+  double animatedContainerWidth = 50;
+  double animatedContainerHeight = 50;
+  MyCustomTweenModel tweenEndModel = MyCustomTweenModel(
+    color: Colors.blue,
+    width: 50,
+    height: 50,
+  );
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        children: [
-          Expanded(
-            child: AnimatedList(
-              initialItemCount: items.length,
-              key: listKey,
-              itemBuilder: (context, index, animation) {
-                return ScaleTransition(
-                  scale: animation,
-                  child: GestureDetector(
-                    onTap: () {
-                      _removeItem(index);
-                    },
-                    child: Text(
-                      items[index],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          SizedBox(
-            height: 100,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _addItem();
-            },
-            child: Text("Animate"),
-          ),
-          SizedBox(
-            height: 100,
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _removeItem(int index) {
-    listKey.currentState?.removeItem(
-      index,
-      (context, animation) => ScaleTransition(
-        scale: animation,
-        child: Container(
-          width: 200,
-          height: 100,
-          color: Colors.red,
-          child: Icon(
-            Icons.delete,
-            size: 20,
-            color: Colors.white,
+    return Column(
+      children: [
+        AnimatedContainer(
+          duration: Duration(seconds: 1),
+          color: animatedContainerColor,
+          height: animatedContainerHeight,
+          width: animatedContainerWidth,
+          child: const Text(
+            'Animated Container',
+            style: TextStyle(fontSize: 30, color: Colors.white),
           ),
         ),
-      ),
+        SizedBox(
+          height: 20,
+        ),
+        TweenAnimationBuilder<MyCustomTweenModel>(
+          tween: MyCustomTween(
+            begin: MyCustomTweenModel(
+              color: Colors.yellow,
+              width: 50,
+              height: 50,
+            ),
+            end: tweenEndModel,
+          ),
+          duration: Duration(seconds: 1),
+          builder: (context, value, child) {
+            return Container(
+              color: value.color,
+              height: value.height,
+              width: value.width,
+              child: const Text(
+                'Tween Animation ',
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
+            );
+          },
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              if (animatedContainerColor == Colors.blue) {
+                animatedContainerColor = Colors.green;
+                animatedContainerWidth = 200;
+                animatedContainerHeight = 200;
+              } else {
+                animatedContainerColor = Colors.blue;
+                animatedContainerWidth = 50;
+                animatedContainerHeight = 50;
+              }
+              if (tweenEndModel.color == Colors.blue) {
+                tweenEndModel = MyCustomTweenModel(
+                  color: Colors.purple,
+                  width: 200,
+                  height: 200,
+                );
+              } else {
+                tweenEndModel = MyCustomTweenModel(
+                  color: Colors.blue,
+                  width: 50,
+                  height: 50,
+                );
+              }
+            });
+          },
+          child: Text('Animate Colors'),
+        ),
+      ],
     );
-    items.removeAt(index);
   }
+}
 
-  void _addItem() {
-    items.add('New Item ${items.length + 1}');
-    listKey.currentState?.insertItem(items.length - 1);
+class MyCustomTweenModel {
+  final Color color;
+  final double width;
+  final double height;
+  MyCustomTweenModel({
+    required this.color,
+    required this.width,
+    required this.height,
+  });
+  static MyCustomTweenModel lerp(
+    MyCustomTweenModel begin,
+    MyCustomTweenModel end,
+    double t,
+  ) {
+    return MyCustomTweenModel(
+      color: Color.lerp(begin.color, end.color, t)!,
+      width: lerpDouble(begin.width, end.width, t)!,
+      height: lerpDouble(begin.height, end.height, t)!,
+    );
   }
+}
+
+class MyCustomTween extends Tween<MyCustomTweenModel> {
+  MyCustomTween({super.begin, super.end});
+  @override
+  MyCustomTweenModel lerp(double t) => MyCustomTweenModel.lerp(begin!, end!, t);
 }
