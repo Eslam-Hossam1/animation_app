@@ -17,7 +17,7 @@ class _AnimationsViewState extends State<AnimationsView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomAnimatedList(),
+              CustomTweenAnimationBuilder(),
             ],
           ),
         ),
@@ -26,88 +26,28 @@ class _AnimationsViewState extends State<AnimationsView> {
   }
 }
 
-class CustomAnimatedList extends StatefulWidget {
-  const CustomAnimatedList({
+class CustomTweenAnimationBuilder extends StatelessWidget {
+  const CustomTweenAnimationBuilder({
     super.key,
   });
 
   @override
-  State<CustomAnimatedList> createState() => _CustomAnimatedListState();
-}
-
-class _CustomAnimatedListState extends State<CustomAnimatedList> {
-  List<String> items = [
-    'Eslam',
-    'Ahmed',
-    'Marwan',
-    'Abass',
-    'Salman',
-  ];
-
-  GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
-  @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        children: [
-          Expanded(
-            child: AnimatedList(
-              initialItemCount: items.length,
-              key: listKey,
-              itemBuilder: (context, index, animation) {
-                return ScaleTransition(
-                  scale: animation,
-                  child: GestureDetector(
-                    onTap: () {
-                      _removeItem(index);
-                    },
-                    child: Text(
-                      items[index],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          SizedBox(
-            height: 100,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _addItem();
-            },
-            child: Text("Animate"),
-          ),
-          SizedBox(
-            height: 100,
-          ),
-        ],
+    return TweenAnimationBuilder<int>(
+      tween: IntTween(
+        begin: 0,
+        end: 100,
       ),
-    );
-  }
-
-  void _removeItem(int index) {
-    listKey.currentState?.removeItem(
-      index,
-      (context, animation) => ScaleTransition(
-        scale: animation,
-        child: Container(
-          width: 200,
-          height: 100,
-          color: Colors.red,
-          child: Icon(
-            Icons.delete,
-            size: 20,
-            color: Colors.white,
+      duration: Duration(seconds: 2),
+      builder: (context, value, child) {
+        return Text(
+          '$value',
+          style: TextStyle(
+            fontSize: 100,
+            fontWeight: FontWeight.bold,
           ),
-        ),
-      ),
+        );
+      },
     );
-    items.removeAt(index);
-  }
-
-  void _addItem() {
-    items.add('New Item ${items.length + 1}');
-    listKey.currentState?.insertItem(items.length - 1);
   }
 }
