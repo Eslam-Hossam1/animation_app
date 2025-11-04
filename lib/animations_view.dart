@@ -40,44 +40,47 @@ class CustomTweenAnimationBuilder extends StatefulWidget {
 
 class _CustomTweenAnimationBuilderState
     extends State<CustomTweenAnimationBuilder> {
-  Color beginTweenColor = Colors.red;
-  Color endTweenColor = Colors.red;
-  Color animatedContainerColor = Colors.blue;
+  double animatedOpacityValue = 1;
+  double tweenOpacityEnd = 1;
   @override
   Widget build(BuildContext context) {
-    ///if there is something can be built with animated foo widgets so go with it better
-    ///else you can use tween aniamtion builder
     return Column(
       children: [
-        AnimatedContainer(
-          height: 100,
-          color: animatedContainerColor,
-          width: 200,
+        AnimatedOpacity(
+          opacity: animatedOpacityValue,
           duration: Duration(
             seconds: 1,
           ),
-          child: const Text(
-            'Animated Container',
-            style: TextStyle(fontSize: 30, color: Colors.white),
+          child: Container(
+            color: Colors.blue,
+            height: 100,
+            width: 200,
+            child: const Text(
+              'Animated Container',
+              style: TextStyle(fontSize: 30, color: Colors.white),
+            ),
           ),
         ),
         SizedBox(
           height: 20,
         ),
-        TweenAnimationBuilder<Color?>(
-          tween: ColorTween(
-            begin: beginTweenColor,
-            end: endTweenColor,
+        TweenAnimationBuilder<double?>(
+          tween: Tween<double>(
+            begin: 0,
+            end: tweenOpacityEnd,
           ),
-          duration: Duration(seconds: 2),
+          duration: Duration(seconds: 1),
           builder: (context, value, child) {
-            return Container(
-              color: value,
-              height: 100,
-              width: 200,
-              child: const Text(
-                'Tween Animation ',
-                style: TextStyle(fontSize: 30, color: Colors.white),
+            return Opacity(
+              opacity: value!,
+              child: Container(
+                color: Colors.purple,
+                height: 100,
+                width: 200,
+                child: const Text(
+                  'Tween Animation ',
+                  style: TextStyle(fontSize: 30, color: Colors.white),
+                ),
               ),
             );
           },
@@ -88,32 +91,15 @@ class _CustomTweenAnimationBuilderState
         ElevatedButton(
           onPressed: () {
             setState(() {
-              if (animatedContainerColor == Colors.blue) {
-                animatedContainerColor = Colors.red;
-              } else {
-                animatedContainerColor = Colors.blue;
-              }
-              if (beginTweenColor == Colors.red &&
-                  endTweenColor == Colors.red) {
-                beginTweenColor = Colors.red;
-                endTweenColor = Colors.green;
-              } else if (beginTweenColor == Colors.red &&
-                  endTweenColor == Colors.green) {
-                beginTweenColor = Colors.green;
-                endTweenColor = Colors.red;
-              } else if (beginTweenColor == Colors.red &&
-                  endTweenColor == Colors.green) {
-                beginTweenColor = Colors.green;
-                endTweenColor = Colors.red;
-              } else if (beginTweenColor == Colors.green &&
-                  endTweenColor == Colors.red) {
-                beginTweenColor = Colors.red;
-                endTweenColor = Colors.green;
-              }
-              log('begin: $beginTweenColor , end: $endTweenColor');
+              animatedOpacityValue == 0
+                  ? animatedOpacityValue = 1.0
+                  : animatedOpacityValue = 0;
+              tweenOpacityEnd == 0
+                  ? tweenOpacityEnd = 1.0
+                  : tweenOpacityEnd = 0;
             });
           },
-          child: Text('Animate Colors'),
+          child: Text('Animate opacity'),
         ),
       ],
     );
