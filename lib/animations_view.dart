@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class AnimationsView extends StatefulWidget {
@@ -38,33 +40,45 @@ class CustomTweenAnimationBuilder extends StatefulWidget {
 
 class _CustomTweenAnimationBuilderState
     extends State<CustomTweenAnimationBuilder> {
-  int begin = 0;
-  int end = 0;
+  Color beginTweenColor = Colors.red;
+  Color endTweenColor = Colors.red;
+  Color animatedContainerColor = Colors.blue;
   @override
   Widget build(BuildContext context) {
+    ///if there is something can be built with animated foo widgets so go with it better
+    ///else you can use tween aniamtion builder
     return Column(
       children: [
-        TweenAnimationBuilder<int>(
-          tween: IntTween(
-            begin: begin,
-            end: end,
+        AnimatedContainer(
+          height: 100,
+          color: animatedContainerColor,
+          width: 200,
+          duration: Duration(
+            seconds: 1,
           ),
-          child: const FlutterLogo(
-            size: 100,
+          child: const Text(
+            'Animated Container',
+            style: TextStyle(fontSize: 30, color: Colors.white),
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        TweenAnimationBuilder<Color?>(
+          tween: ColorTween(
+            begin: beginTweenColor,
+            end: endTweenColor,
           ),
           duration: Duration(seconds: 2),
           builder: (context, value, child) {
-            return Column(
-              children: [
-                child!,
-                Text(
-                  '$value',
-                  style: const TextStyle(
-                    fontSize: 100,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            return Container(
+              color: value,
+              height: 100,
+              width: 200,
+              child: const Text(
+                'Tween Animation ',
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ),
             );
           },
         ),
@@ -74,16 +88,32 @@ class _CustomTweenAnimationBuilderState
         ElevatedButton(
           onPressed: () {
             setState(() {
-              if (begin == 0 && end == 100) {
-                begin = 100;
-                end = 0;
+              if (animatedContainerColor == Colors.blue) {
+                animatedContainerColor = Colors.red;
               } else {
-                begin = 0;
-                end = 100;
+                animatedContainerColor = Colors.blue;
               }
+              if (beginTweenColor == Colors.red &&
+                  endTweenColor == Colors.red) {
+                beginTweenColor = Colors.red;
+                endTweenColor = Colors.green;
+              } else if (beginTweenColor == Colors.red &&
+                  endTweenColor == Colors.green) {
+                beginTweenColor = Colors.green;
+                endTweenColor = Colors.red;
+              } else if (beginTweenColor == Colors.red &&
+                  endTweenColor == Colors.green) {
+                beginTweenColor = Colors.green;
+                endTweenColor = Colors.red;
+              } else if (beginTweenColor == Colors.green &&
+                  endTweenColor == Colors.red) {
+                beginTweenColor = Colors.red;
+                endTweenColor = Colors.green;
+              }
+              log('begin: $beginTweenColor , end: $endTweenColor');
             });
           },
-          child: Text('Animate to ${100}'),
+          child: Text('Animate Colors'),
         ),
       ],
     );
