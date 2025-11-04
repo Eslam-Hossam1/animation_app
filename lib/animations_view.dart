@@ -49,14 +49,22 @@ class _CustomTweenAnimationBuilderState
             begin: begin,
             end: end,
           ),
+          child: const FlutterLogo(
+            size: 100,
+          ),
           duration: Duration(seconds: 2),
           builder: (context, value, child) {
-            return Text(
-              '$value',
-              style: const TextStyle(
-                fontSize: 100,
-                fontWeight: FontWeight.bold,
-              ),
+            return Column(
+              children: [
+                child!,
+                Text(
+                  '$value',
+                  style: const TextStyle(
+                    fontSize: 100,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             );
           },
         ),
