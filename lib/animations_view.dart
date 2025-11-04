@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -40,47 +40,49 @@ class CustomTweenAnimationBuilder extends StatefulWidget {
 
 class _CustomTweenAnimationBuilderState
     extends State<CustomTweenAnimationBuilder> {
-  double animatedOpacityValue = 1;
-  double tweenOpacityEnd = 1;
+  Color animatedContainerColor = Colors.blue;
+  double animatedContainerWidth = 50;
+  double animatedContainerHeight = 50;
+  MyCustomTweenModel tweenEndModel = MyCustomTweenModel(
+    color: Colors.blue,
+    width: 50,
+    height: 50,
+  );
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AnimatedOpacity(
-          opacity: animatedOpacityValue,
-          duration: Duration(
-            seconds: 1,
-          ),
-          child: Container(
-            color: Colors.blue,
-            height: 100,
-            width: 200,
-            child: const Text(
-              'Animated Container',
-              style: TextStyle(fontSize: 30, color: Colors.white),
-            ),
+        AnimatedContainer(
+          duration: Duration(seconds: 1),
+          color: animatedContainerColor,
+          height: animatedContainerHeight,
+          width: animatedContainerWidth,
+          child: const Text(
+            'Animated Container',
+            style: TextStyle(fontSize: 30, color: Colors.white),
           ),
         ),
         SizedBox(
           height: 20,
         ),
-        TweenAnimationBuilder<double?>(
-          tween: Tween<double>(
-            begin: 0,
-            end: tweenOpacityEnd,
+        TweenAnimationBuilder<MyCustomTweenModel>(
+          tween: MyCustomTween(
+            begin: MyCustomTweenModel(
+              color: Colors.yellow,
+              width: 50,
+              height: 50,
+            ),
+            end: tweenEndModel,
           ),
           duration: Duration(seconds: 1),
           builder: (context, value, child) {
-            return Opacity(
-              opacity: value!,
-              child: Container(
-                color: Colors.purple,
-                height: 100,
-                width: 200,
-                child: const Text(
-                  'Tween Animation ',
-                  style: TextStyle(fontSize: 30, color: Colors.white),
-                ),
+            return Container(
+              color: value.color,
+              height: value.height,
+              width: value.width,
+              child: const Text(
+                'Tween Animation ',
+                style: TextStyle(fontSize: 30, color: Colors.white),
               ),
             );
           },
@@ -91,17 +93,61 @@ class _CustomTweenAnimationBuilderState
         ElevatedButton(
           onPressed: () {
             setState(() {
-              animatedOpacityValue == 0
-                  ? animatedOpacityValue = 1.0
-                  : animatedOpacityValue = 0;
-              tweenOpacityEnd == 0
-                  ? tweenOpacityEnd = 1.0
-                  : tweenOpacityEnd = 0;
+              if (animatedContainerColor == Colors.blue) {
+                animatedContainerColor = Colors.green;
+                animatedContainerWidth = 200;
+                animatedContainerHeight = 200;
+              } else {
+                animatedContainerColor = Colors.blue;
+                animatedContainerWidth = 50;
+                animatedContainerHeight = 50;
+              }
+              if (tweenEndModel.color == Colors.blue) {
+                tweenEndModel = MyCustomTweenModel(
+                  color: Colors.purple,
+                  width: 200,
+                  height: 200,
+                );
+              } else {
+                tweenEndModel = MyCustomTweenModel(
+                  color: Colors.blue,
+                  width: 50,
+                  height: 50,
+                );
+              }
             });
           },
-          child: Text('Animate opacity'),
+          child: Text('Animate Colors'),
         ),
       ],
     );
   }
+}
+
+class MyCustomTweenModel {
+  final Color color;
+  final double width;
+  final double height;
+  MyCustomTweenModel({
+    required this.color,
+    required this.width,
+    required this.height,
+  });
+  static MyCustomTweenModel lerp(
+    MyCustomTweenModel begin,
+    MyCustomTweenModel end,
+    double t,
+  ) {
+    return MyCustomTweenModel(
+      color: Color.lerp(begin.color, end.color, t)!,
+      width: lerpDouble(begin.width, end.width, t)!,
+      height: lerpDouble(begin.height, end.height, t)!,
+    );
+  }
+}
+
+class MyCustomTween extends Tween<MyCustomTweenModel> {
+  MyCustomTween({super.begin, super.end});
+  @override
+  MyCustomTweenModel lerp(double t) => MyCustomTweenModel.lerp(begin!, end!, t);
 }
