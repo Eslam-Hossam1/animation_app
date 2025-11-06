@@ -16,9 +16,7 @@ class _AnimationsViewState extends State<AnimationsView> {
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomFooTransition(),
-            ],
+            children: [CustomFooTransition()],
           ),
         ),
       ),
@@ -27,30 +25,50 @@ class _AnimationsViewState extends State<AnimationsView> {
 }
 
 class CustomFooTransition extends StatefulWidget {
-  const CustomFooTransition({
-    super.key,
-  });
+  const CustomFooTransition({super.key});
 
   @override
   State<CustomFooTransition> createState() => _CustomFooTransitionState();
 }
 
 class _CustomFooTransitionState extends State<CustomFooTransition>
-    with SingleTickerProviderStateMixin {
-  late Animation<double> scaleAnimation;
-  late AnimationController animationController;
+    with TickerProviderStateMixin {
+  late Animation<double> flutterLogoScaleAnimation;
+  late AnimationController flutterLogoAnimationController;
+  late Animation<double> containerScaleAnimation;
+  late AnimationController containerAnimationController;
   @override
   void initState() {
     super.initState();
-    animationController = AnimationController(
+    initAnimations();
+  }
+
+  void initAnimations() {
+    initFlutterLogoAnimation();
+    initContainerAnimation();
+  }
+
+  void initContainerAnimation() {
+    containerAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(
-        seconds: 1,
-      ),
+      duration: const Duration(seconds: 1),
     );
-    scaleAnimation = Tween<double>(begin: .5, end: 2).animate(
-      animationController,
+
+    containerScaleAnimation = Tween<double>(
+      begin: .5,
+      end: 2,
+    ).animate(containerAnimationController);
+  }
+
+  void initFlutterLogoAnimation() {
+    flutterLogoAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
     );
+    flutterLogoScaleAnimation = Tween<double>(
+      begin: .5,
+      end: 2,
+    ).animate(flutterLogoAnimationController);
   }
 
   @override
@@ -58,68 +76,39 @@ class _CustomFooTransitionState extends State<CustomFooTransition>
     return Column(
       children: [
         ScaleTransition(
-          scale: scaleAnimation,
-          child: FlutterLogo(
-            size: 100,
-          ),
+          scale: flutterLogoScaleAnimation,
+          child: FlutterLogo(size: 100),
+        ),
+        ScaleTransition(
+          scale: containerScaleAnimation,
+          child: Container(width: 200, height: 100, color: Colors.purple),
         ),
         const SizedBox(height: 100),
         Wrap(
           children: [
             ElevatedButton(
               onPressed: () {
-                animationController.forward();
+                flutterLogoAnimationController.forward();
               },
-              child: const Text('forward'),
+              child: const Text('forward logo'),
             ),
             ElevatedButton(
               onPressed: () {
-                animationController.reverse();
+                containerAnimationController.forward();
               },
-              child: const Text('reverse'),
+              child: const Text('forward container'),
             ),
             ElevatedButton(
               onPressed: () {
-                animationController.reset();
+                flutterLogoAnimationController.reverse();
               },
-              child: const Text('reset'),
+              child: const Text('reverse logo'),
             ),
             ElevatedButton(
               onPressed: () {
-                animationController.repeat(reverse: true);
+                containerAnimationController.reverse();
               },
-              child: const Text('repeat reverse'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                animationController.repeat();
-              },
-              child: const Text('repeat without reverse'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                animationController.stop();
-              },
-              child: const Text('stop'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                scaleAnimation.addListener(
-                  customScaleAnimationListner,
-                );
-                animationController.addListener(
-                  customAnimationControllerListner,
-                );
-              },
-              child: const Text('add listeners'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                animationController
-                    .removeListener(customAnimationControllerListner);
-                animationController.removeListener(customScaleAnimationListner);
-              },
-              child: const Text('remove listeners'),
+              child: const Text('reverse container'),
             ),
           ],
         ),
