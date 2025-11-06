@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class AnimationsView extends StatefulWidget {
@@ -58,6 +60,15 @@ class _CustomFooTransitionState extends State<CustomFooTransition>
       begin: .5,
       end: 2,
     ).animate(containerAnimationController);
+    containerAnimationController.addStatusListener((AnimationStatus status) {
+      log('Container Animation Status: $status');
+    });
+    containerAnimationController.addListener(() {
+      if (containerAnimationController.value >= .5) {
+        flutterLogoAnimationController.forward();
+        log('play Container Animation Value: ${containerAnimationController.value}');
+      }
+    });
   }
 
   void initFlutterLogoAnimation() {
@@ -109,6 +120,18 @@ class _CustomFooTransitionState extends State<CustomFooTransition>
                 containerAnimationController.reverse();
               },
               child: const Text('reverse container'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                containerAnimationController.stop();
+              },
+              child: const Text('stop container'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                containerAnimationController.reset();
+              },
+              child: const Text('reset container'),
             ),
           ],
         ),
