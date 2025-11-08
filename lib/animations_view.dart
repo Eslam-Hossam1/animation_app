@@ -54,6 +54,7 @@ class _CustomFooTransitionState extends State<CustomFooTransition>
     containerAnimationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
+      reverseDuration: const Duration(seconds: 2),
     );
 
     containerScaleAnimation = Tween<double>(
@@ -117,6 +118,7 @@ class _CustomFooTransitionState extends State<CustomFooTransition>
             ),
             ElevatedButton(
               onPressed: () {
+                
                 containerAnimationController.reverse();
               },
               child: const Text('reverse container'),
