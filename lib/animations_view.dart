@@ -1,6 +1,12 @@
-import 'dart:developer';
-
+import 'dart:ui';
 import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MaterialApp(
+    home: AnimationsView(),
+    debugShowCheckedModeBanner: false,
+  ));
+}
 
 class AnimationsView extends StatefulWidget {
   const AnimationsView({super.key});
@@ -10,15 +16,17 @@ class AnimationsView extends StatefulWidget {
 }
 
 class _AnimationsViewState extends State<AnimationsView> {
-  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [CustomFooTransition()],
+          child: SizedBox(
+            width: double.infinity,
+            height: 400,
+            child: Stack(
+              children: const [CustomRocketTransition()],
+            ),
           ),
         ),
       ),
@@ -26,118 +34,104 @@ class _AnimationsViewState extends State<AnimationsView> {
   }
 }
 
-class CustomFooTransition extends StatefulWidget {
-  const CustomFooTransition({super.key});
+class CustomRocketTransition extends StatefulWidget {
+  const CustomRocketTransition({super.key});
 
   @override
-  State<CustomFooTransition> createState() => _CustomFooTransitionState();
+  State<CustomRocketTransition> createState() => _CustomRocketTransitionState();
 }
 
-class _CustomFooTransitionState extends State<CustomFooTransition>
-    with TickerProviderStateMixin {
-  late Animation<double> flutterLogoScaleAnimation;
-  late AnimationController flutterLogoAnimationController;
-  late Animation<double> containerScaleAnimation;
-  late AnimationController containerAnimationController;
+class _CustomRocketTransitionState extends State<CustomRocketTransition>
+    with SingleTickerProviderStateMixin {
+  late AnimationController rocketController;
+  late Animation<CustomRocketTweenModel> rocketAnimation;
+
   @override
   void initState() {
     super.initState();
-    initAnimations();
-  }
 
-  void initAnimations() {
-    initFlutterLogoAnimation();
-    initContainerAnimation();
-  }
-
-  void initContainerAnimation() {
-    containerAnimationController = AnimationController(
+    rocketController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
-      reverseDuration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 3),
     );
 
-    containerScaleAnimation = Tween<double>(
-      begin: .5,
-      end: 2,
-    ).animate(containerAnimationController);
-    containerAnimationController.addStatusListener((AnimationStatus status) {
-      log('Container Animation Status: $status');
-    });
-    containerAnimationController.addListener(() {
-      if (containerAnimationController.value >= .5) {
-        flutterLogoAnimationController.forward();
-        log('play Container Animation Value: ${containerAnimationController.value}');
-      }
-    });
+    rocketAnimation = CustomRocketTween(
+      begin: CustomRocketTweenModel(
+        rocketSize: 1,
+        rocketTurns: 0,
+        bottom: 0,
+        left: 50,
+      ),
+      end: CustomRocketTweenModel(
+        rocketSize: 2,
+        rocketTurns: .5,
+        bottom: 300,
+        left: 150,
+      ),
+    ).animate(CurvedAnimation(
+      parent: rocketController,
+      curve: Curves.easeInOut,
+    ));
+
+    rocketController.repeat(reverse: true);
   }
 
-  void initFlutterLogoAnimation() {
-    flutterLogoAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    );
-    flutterLogoScaleAnimation = Tween<double>(
-      begin: .5,
-      end: 2,
-    ).animate(flutterLogoAnimationController);
+  @override
+  void dispose() {
+    rocketController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ScaleTransition(
-          scale: flutterLogoScaleAnimation,
-          child: FlutterLogo(size: 100),
-        ),
-        ScaleTransition(
-          scale: containerScaleAnimation,
-          child: Container(width: 200, height: 100, color: Colors.purple),
-        ),
-        const SizedBox(height: 100),
-        Wrap(
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                flutterLogoAnimationController.forward();
-              },
-              child: const Text('forward logo'),
+    return AnimatedBuilder(
+      animation: rocketAnimation,
+      builder: (context, child) {
+        return Positioned(
+          left: rocketAnimation.value.left,
+          bottom: rocketAnimation.value.bottom,
+          child: Transform.rotate(
+            angle: rocketAnimation.value.rocketTurns * 3.1416, // turns to radians
+            child: Image.asset(
+              'assets/rocket.jpg',
+              width: 50 * rocketAnimation.value.rocketSize,
+              height: 50 * rocketAnimation.value.rocketSize,
             ),
-            ElevatedButton(
-              onPressed: () {
-                containerAnimationController.forward();
-              },
-              child: const Text('forward container'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                flutterLogoAnimationController.reverse();
-              },
-              child: const Text('reverse logo'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                
-                containerAnimationController.reverse();
-              },
-              child: const Text('reverse container'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                containerAnimationController.stop();
-              },
-              child: const Text('stop container'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                containerAnimationController.reset();
-              },
-              child: const Text('reset container'),
-            ),
-          ],
-        ),
-      ],
+          ),
+        );
+      },
     );
   }
+}
+
+class CustomRocketTweenModel {
+  final double rocketSize;
+  final double rocketTurns;
+  final double left;
+  final double bottom;
+
+  CustomRocketTweenModel({
+    required this.rocketSize,
+    required this.rocketTurns,
+    required this.left,
+    required this.bottom,
+  });
+
+  static CustomRocketTweenModel lerp(
+      CustomRocketTweenModel begin, CustomRocketTweenModel end, double t) {
+    return CustomRocketTweenModel(
+      rocketSize: lerpDouble(begin.rocketSize, end.rocketSize, t)!,
+      rocketTurns: lerpDouble(begin.rocketTurns, end.rocketTurns, t)!,
+      left: lerpDouble(begin.left, end.left, t)!,
+      bottom: lerpDouble(begin.bottom, end.bottom, t)!,
+    );
+  }
+}
+
+class CustomRocketTween extends Tween<CustomRocketTweenModel> {
+  CustomRocketTween({super.begin, super.end});
+
+  @override
+  CustomRocketTweenModel lerp(double t) =>
+      CustomRocketTweenModel.lerp(begin!, end!, t);
 }
