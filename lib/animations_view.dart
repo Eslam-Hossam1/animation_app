@@ -35,8 +35,8 @@ class CustomFooTransition extends StatefulWidget {
 
 class _CustomFooTransitionState extends State<CustomFooTransition>
     with TickerProviderStateMixin {
-  late Animation<double> containerScaleAnimation;
-  late AnimationController containerAnimationController;
+  late Animation<double> progressAnimation;
+  late AnimationController progressAnimationController;
   @override
   void initState() {
     super.initState();
@@ -48,29 +48,44 @@ class _CustomFooTransitionState extends State<CustomFooTransition>
   }
 
   void initContainerAnimation() {
-    containerAnimationController = AnimationController(
+    progressAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 2),
       reverseDuration: const Duration(seconds: 2),
     );
 
-    containerScaleAnimation = Tween<double>(
+    progressAnimation = Tween<double>(
       begin: 0,
       end: 1,
-    ).animate(containerAnimationController);
+    ).animate(progressAnimationController);
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: SizeTransition(
-            axis: Axis.horizontal,
-            //  axisAlignment: ,
-            sizeFactor: containerScaleAnimation,
-            child: Container(width: 200, height: 100, color: Colors.purple),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: AnimatedBuilder(
+            animation: progressAnimation,
+            builder: (context, child) {
+              return Column(
+                children: [
+                  Text(
+                    'Progress: ${(progressAnimation.value * 100).toStringAsFixed(1)}%',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(height: 20),
+                  LinearProgressIndicator(
+                    borderRadius: BorderRadius.circular(12),
+                    minHeight: 20,
+                    value: progressAnimation.value,
+                    backgroundColor: Colors.red.withAlpha(50),
+                    color: Colors.green,
+                  ),
+                ],
+              );
+            },
           ),
         ),
         const SizedBox(height: 100),
@@ -78,26 +93,26 @@ class _CustomFooTransitionState extends State<CustomFooTransition>
           children: [
             ElevatedButton(
               onPressed: () {
-                containerAnimationController.forward();
+                progressAnimationController.forward();
               },
               child: const Text('forward container'),
             ),
 
             ElevatedButton(
               onPressed: () {
-                containerAnimationController.reverse();
+                progressAnimationController.reverse();
               },
               child: const Text('reverse container'),
             ),
             ElevatedButton(
               onPressed: () {
-                containerAnimationController.stop();
+                progressAnimationController.stop();
               },
               child: const Text('stop container'),
             ),
             ElevatedButton(
               onPressed: () {
-                containerAnimationController.reset();
+                progressAnimationController.reset();
               },
               child: const Text('reset container'),
             ),
