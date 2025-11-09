@@ -52,26 +52,49 @@ class _CustomRocketTransitionState extends State<CustomRocketTransition>
 
     rocketController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 6), // Increased for 3 stages
     );
 
-    rocketAnimation = CustomRocketTween(
-      begin: CustomRocketTweenModel(
-        rocketSize: 1,
-        rocketTurns: 0,
-        bottom: 0,
-        left: 50,
+    // Define 3 stages using TweenSequence
+    rocketAnimation = TweenSequence<CustomRocketTweenModel>([
+      // Stage 1: Initial movement (0% to 40% of animation)
+      TweenSequenceItem(
+        tween: CustomRocketTween(
+          begin: CustomRocketTweenModel(
+            rocketSize: 1,
+            rocketTurns: 0,
+            bottom: 0,
+            left: 50,
+          ),
+          end: CustomRocketTweenModel(
+            rocketSize: 2,
+            rocketTurns: 0.5,
+            bottom: 300,
+            left: 150,
+          ),
+        ).chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 40, // 40% of the total animation time
       ),
-      end: CustomRocketTweenModel(
-        rocketSize: 2,
-        rocketTurns: .5,
-        bottom: 300,
-        left: 150,
+      
+      // Stage 2: Move to third point (40% to 100% of animation)
+      TweenSequenceItem(
+        tween: CustomRocketTween(
+          begin: CustomRocketTweenModel(
+            rocketSize: 2,
+            rocketTurns: 0.5,
+            bottom: 300,
+            left: 150,
+          ),
+          end: CustomRocketTweenModel(
+            rocketSize: 3,
+            rocketTurns: 1.5, // Additional full rotation
+            bottom: 50,
+            left: 300,
+          ),
+        ).chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 60, // 60% of the total animation time
       ),
-    ).animate(CurvedAnimation(
-      parent: rocketController,
-      curve: Curves.easeInOut,
-    ));
+    ]).animate(rocketController);
 
     rocketController.repeat(reverse: true);
   }
@@ -91,7 +114,7 @@ class _CustomRocketTransitionState extends State<CustomRocketTransition>
           left: rocketAnimation.value.left,
           bottom: rocketAnimation.value.bottom,
           child: Transform.rotate(
-            angle: rocketAnimation.value.rocketTurns * 3.1416, // turns to radians
+            angle: rocketAnimation.value.rocketTurns * 3.1416,
             child: Image.asset(
               'assets/rocket.jpg',
               width: 50 * rocketAnimation.value.rocketSize,
